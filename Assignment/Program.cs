@@ -1,5 +1,9 @@
-﻿using System.Threading;
+﻿using System.ComponentModel;
+using System.Data.SqlTypes;
+using System.Runtime.Intrinsics.X86;
+using System.Threading;
 using static Assignment.ListGenerator;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Assignment
 {
@@ -17,6 +21,17 @@ namespace Assignment
             foreach (var item in Array)
             {
                 Console.WriteLine(item);
+            }
+        }
+        public static void PrintIGroup<T, Y>(IEnumerable<IGrouping<T, Y>> Groups)
+        {
+            foreach (var Group in Groups)
+            {
+                Console.WriteLine($"\n{Group.Key}:");
+                foreach (var Product in Group)
+                {
+                    Console.WriteLine($".... {Product}");
+                }
             }
         }
 
@@ -94,7 +109,7 @@ namespace Assignment
             #endregion
 
             //(Read dictionary_english.txt into Array of String First)
-            string[] Words = File.ReadAllLines("dictionary_english.txt");
+            //string[] Words = File.ReadAllLines("dictionary_english.txt");
 
             #region 3.Get the total number of characters of all words in dictionary_english.txt
             //int Total = Words.Sum(W => W.Length);
@@ -297,7 +312,7 @@ namespace Assignment
             #endregion
 
             #region 2. Produce a sequence of the uppercase and lowercase versions of each word in the original array (Anonymous Types).
-            string[] words = { "aPPLE", "BlUeBeRrY", "cHeRry" };
+            //string[] words = { "aPPLE", "BlUeBeRrY", "cHeRry" };
             // Fluent Syntax
             //var Result = words.Select(W => new { Word = W, Lower = W.ToLower(), Upper = W.ToUpper() });
 
@@ -340,6 +355,160 @@ namespace Assignment
 
 
             //PrintSequence(Result);
+            #endregion
+
+            #endregion
+
+            #region LINQ - Set Operators
+
+            #region 1. Find the unique Category names from Product List
+            // Fluent Syntax
+            //var Result = ProductList.Select(P => P.Category).Distinct();
+
+            // Query Syntax
+            //var Result = (from P in ProductList
+            //             select P.Category).Distinct();
+
+            //PrintSequence(Result);
+            #endregion
+
+            #region 2. Produce a Sequence containing the unique first letter from both product and customer names. 
+            //var Seq01 = ProductList.Select(P => P.ProductName[0]);
+            //var Seq02 = CustomerList.Select(C => C.CustomerName[0]);
+            //var Result = Seq01.Union(Seq02).ToList();
+
+            // --------------- OR -----------------
+
+            //var Result = ProductList.Select(P => P.ProductName[0])
+            //             .Union(
+            //             CustomerList.Select(C => C.CustomerName[0])
+            //             );
+
+            //PrintSequence(Result);
+            #endregion
+
+            #region 3. Create one sequence that contains the common first letter from both product and customer names.
+            //var Seq01 = ProductList.Select(P => P.ProductName[0]);
+            //var Seq02 = CustomerList.Select(C => C.CustomerName[0]);
+            //var Result = Seq01.Intersect(Seq02).ToList();
+
+            // --------------- OR -----------------
+
+            //var Result = ProductList.Select(P => P.ProductName[0])
+            //             .Intersect(
+            //              CustomerList.Select(C => C.CustomerName[0] )
+            //              );
+
+            //PrintSequence(Result);
+            #endregion
+
+            #region 4. Create one sequence that contains the first letters of product names that are not also first letters of customer names.
+            //var Seq01 = ProductList.Select(P => P.ProductName[0]);
+            //var Seq02 = CustomerList.Select(C => C.CustomerName[0]);
+            //var Result = Seq01.Except(Seq02).ToList();
+
+            // --------------- OR -----------------
+
+            //var Result = ProductList.Select(P => P.ProductName[0])
+            //             .Except(
+            //              CustomerList.Select(C => C.CustomerName[0] )
+            //              );
+
+            //PrintSequence(Result);
+            #endregion
+
+            #endregion
+
+            #region LINQ - Partitioning Operators
+
+            #region 1. Get the first 3 orders from customers in Washington
+            //var Result = CustomerList.Where(C => C.Region == "WA").SelectMany(C => C.Orders).Take(3);
+
+            //PrintSequence(Result);
+            #endregion
+
+            #region 2. Get all but the first 2 orders from customers in Washington.
+            //var Result = CustomerList.Where(C => C.Region == "WA").SelectMany(C => C.Orders).SkipLast(2);
+
+            //PrintSequence(Result);
+            #endregion
+
+            #region 3. Return elements starting from the beginning of the array until a number is hit that is less than its position in the array.
+            //int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+
+            //var Result = numbers.TakeWhile((X, I) => X > I);
+
+            //PrintSequence(Result);
+            #endregion
+
+            #region 4.Get the elements of the array starting from the first element divisible by 3.
+            //int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+
+            //var Result = numbers.SkipWhile(I => I % 3 != 0);
+
+            //PrintSequence(Result);
+            #endregion
+
+            #endregion
+
+            #region LINQ - Quantifiers
+
+            #region 1. Determine if any of the words in dictionary_english.txt contain the substring 'ei'.
+            //string[] Words = File.ReadAllLines("dictionary_english.txt");
+
+            //var Result = Words.Any(W => W.Contains("ei"));
+
+            //Console.WriteLine(Result ? "Yes" : "No!");
+            #endregion
+
+            #region 2. Return a grouped a list of products only for categories that have at least one product that is out of stock.
+            // Fluent Syntax
+            //var Categories = ProductList.Where(P => P.UnitsInStock == 0).Select(P => P.Category).ToArray();
+            //var Result = ProductList.Where(P => Categories.Contains(P.Category)).GroupBy(P => P.Category);
+
+            // Query Syntax
+            //var Result = from P in ProductList
+            //             group P by P.Category
+            //             into Groups
+            //             where Groups.Any(G => G.UnitsInStock == 0)
+            //             select Groups;
+
+            //PrintIGroup(Result);
+
+            #endregion
+
+            #region 3. Return a grouped a list of products only for categories that have all of their products in stock.
+            // Fluent Syntax
+            //var Categories = ProductList.Where(P => P.UnitsInStock == 0).Select(P => P.Category).ToArray();
+            //var Result = ProductList.Where(P => !Categories.Contains(P.Category)).GroupBy(P => P.Category);
+
+            // Query Syntax
+            //var Result = from P in ProductList
+            //             group P by P.Category
+            //             into Groups
+            //             where Groups.All(G => G.UnitsInStock != 0)
+            //             select Groups;
+
+            //PrintIGroup(Result);
+            #endregion
+
+            #endregion
+
+            #region LINQ – Grouping Operators
+
+            #region 1. Uses group by to partition a list of words by their first letter. Use dictionary_english.txt for Input
+            //string[] Words = File.ReadAllLines("dictionary_english.txt");
+
+            //var Result = Words.OrderBy(W => W).GroupBy(W => W[0]).Select(W => new { W.Key, Count = W.Count() });
+
+            //var Result = from W in Words
+            //             orderby W
+            //             group W by W[0]
+            //             into Groups
+            //             select new { Groups.Key, Count = Groups.Count() };
+
+            //PrintSequence(Result);
+
             #endregion
 
             #endregion
