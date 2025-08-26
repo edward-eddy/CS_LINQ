@@ -343,6 +343,25 @@ namespace Assignment
             #endregion
 
             #endregion
+
+            #region LINQ - Set Operators
+
+            #region 1. Find the unique Category names from Product List
+            // Fluent Syntax
+            //var Result = ProductList.Select(P => P.Category).Distinct();
+
+            // Query Syntax
+            //var Result = (from P in ProductList
+            //              select P.Category).Distinct();
+
+            //PrintSequence(Result);
+            #endregion
+
+            #region 2. Produce a Sequence containing the unique first letter from both product and customer names. 
+
+            #endregion
+
+            #endregion
         }
     }
 }
